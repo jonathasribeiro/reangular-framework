@@ -37,7 +37,7 @@ program
     const targetDir = path.join(process.cwd(), projectName);
 
     if (fs.existsSync(targetDir)) {
-      console.error(`❌ Folder "\${projectName}" already exists.`);
+      console.error(`❌ Folder ${projectName} already exists.`);
       return;
     }
 
@@ -52,13 +52,14 @@ program
     for (const module of selectedModules) {
       const templateDir = path.join(__dirname, 'templates', module);
       if (!fs.existsSync(templateDir)) {
-        console.warn(`⚠️ Template for "\${module}" not found. Skipping...`);
+        console.warn(`⚠️ Template for ${module} not found. Skipping...`);
+
         continue;
       }
       copyRecursive(templateDir, targetDir);
     }
 
-    console.log(`✅ Project "\${projectName}" created with: \${selectedModules.join(", ")}`);
+    console.log(`✅ Project ${projectName} created with: ${selectedModules.join(", ")}`);
   });
 
 program.parse(process.argv);

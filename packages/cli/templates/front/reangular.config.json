@@ -1,0 +1,13 @@
+{
+  "name": "my-app",
+  "modules": {
+    "front": true,
+    "back": false,
+    "nocode": false,
+    "analytics": false
+  },
+  "features": {
+    "typescript": true,
+    "routing": true
+  }
+}

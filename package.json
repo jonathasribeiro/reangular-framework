@@ -5,6 +5,9 @@
   "workspaces": [
     "packages/*"
   ],
+  "scripts": {
+    "build": "tsc -b packages/cli packages/front packages/back packages/nocode packages/analytics packages/shared"
+  },
   "devDependencies": {
     "typescript": "^5.8.3"
   }
