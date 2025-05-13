@@ -1,0 +1,11 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./packages/cli" },
+    { "path": "./packages/front" },
+    { "path": "./packages/back" },
+    { "path": "./packages/nocode" },
+    { "path": "./packages/analytics" },
+    { "path": "./packages/shared" }
+  ]
+}

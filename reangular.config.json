@@ -1,0 +1,15 @@
+{
+  "name": "reangular-project",
+  "modules": {
+    "front": true,
+    "back": false,
+    "nocode": false,
+    "analytics": false,
+    "security": false
+  },
+  "features": {
+    "typescript": true,
+    "routing": true,
+    "auth": false
+  }
+}

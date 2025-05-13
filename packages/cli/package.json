@@ -1,0 +1,15 @@
+{
+  "name": "@reangular/cli",
+  "version": "0.0.1",
+  "main": "index.ts",
+  "bin": {
+    "reangular": "./index.ts"
+  },
+  "types": "index.d.ts",
+  "dependencies": {
+    "commander": "^13.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.17"
+  }
+}
