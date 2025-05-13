@@ -1,0 +1,1 @@
+import Route from './src/core/Route'; Route.get('/noop', 'TestController.index');
