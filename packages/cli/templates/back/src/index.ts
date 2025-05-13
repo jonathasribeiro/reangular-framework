@@ -1,0 +1,1 @@
+console.log("🚀 Reangular backend app started.");

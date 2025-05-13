@@ -1,0 +1,13 @@
+{
+  "name": "my-app",
+  "modules": {
+    "back": true,
+    "front": false,
+    "nocode": false,
+    "analytics": false
+  },
+  "features": {
+    "typescript": true,
+    "auth": false
+  }
+}
