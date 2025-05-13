@@ -50,13 +50,15 @@ program
     if (options.analytics) selectedModules.push("analytics");
 
     for (const module of selectedModules) {
-      const templateDir = path.join(__dirname, 'templates', module);
+      const templateDir = path.join(process.cwd(), 'packages', 'cli', 'templates', module);
       if (!fs.existsSync(templateDir)) {
         console.warn(`⚠️ Template for ${module} not found. Skipping...`);
-
         continue;
       }
-      copyRecursive(templateDir, targetDir);
+
+      const moduleTargetDir = path.join(targetDir, module);
+      fs.mkdirSync(moduleTargetDir, { recursive: true });
+      copyRecursive(templateDir, moduleTargetDir);
     }
 
     console.log(`✅ Project ${projectName} created with: ${selectedModules.join(", ")}`);
