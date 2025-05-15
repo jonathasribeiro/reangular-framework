@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import { MiddlewareFn } from './Middleware';
 
 type HttpMethod = 'get' | 'post' | 'put' | 'delete' | 'patch';
 
@@ -37,4 +38,10 @@ export const Patch = createMethodDecorator('patch');
 
 export function getControllerRoutes(controller: any): RouteMeta[] {
   return Reflect.getMetadata('reangular:routes', controller) || [];
+}
+
+export function Middleware(name: string): MethodDecorator {
+  return (target, propertyKey) => {
+    Reflect.defineMetadata(`reangular:middleware:${String(propertyKey)}`, name, target.constructor);
+  };
 }
