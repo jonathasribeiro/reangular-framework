@@ -1,7 +1,7 @@
-import Middleware, { MiddlewareFn } from './Middleware';
-import { registerController } from './RouteController';
+import Middleware, { MiddlewareFn } from "./Middleware";
+import { registerController } from "./RouteController";
 
-type HttpMethod = 'get' | 'post' | 'put' | 'delete' | 'patch';
+type HttpMethod = "get" | "post" | "put" | "delete" | "patch";
 
 interface RouteEntry {
   method: HttpMethod;
@@ -11,7 +11,7 @@ interface RouteEntry {
 }
 
 const routes: RouteEntry[] = [];
-let currentPrefix = '';
+let currentPrefix = "";
 let tempMiddlewares: string[] = [];
 
 const Route = {
@@ -22,7 +22,7 @@ const Route = {
 
   get(path: string, handler: string) {
     routes.push({
-      method: 'get',
+      method: "get",
       path: currentPrefix + path,
       handler,
       middlewares: Middleware.resolve(tempMiddlewares),
@@ -32,7 +32,7 @@ const Route = {
 
   post(path: string, handler: string) {
     routes.push({
-      method: 'post',
+      method: "post",
       path: currentPrefix + path,
       handler,
       middlewares: Middleware.resolve(tempMiddlewares),
@@ -42,7 +42,7 @@ const Route = {
 
   put(path: string, handler: string) {
     routes.push({
-      method: 'put',
+      method: "put",
       path: currentPrefix + path,
       handler,
       middlewares: Middleware.resolve(tempMiddlewares),
@@ -52,7 +52,7 @@ const Route = {
 
   delete(path: string, handler: string) {
     routes.push({
-      method: 'delete',
+      method: "delete",
       path: currentPrefix + path,
       handler,
       middlewares: Middleware.resolve(tempMiddlewares),
@@ -62,7 +62,7 @@ const Route = {
 
   patch(path: string, handler: string) {
     routes.push({
-      method: 'patch',
+      method: "patch",
       path: currentPrefix + path,
       handler,
       middlewares: Middleware.resolve(tempMiddlewares),
@@ -77,17 +77,24 @@ const Route = {
   clear() {
     routes.length = 0;
     tempMiddlewares = [];
-    currentPrefix = '';
+    currentPrefix = "";
   },
 
   async controller(controllerPath: string, options?: { baseDir?: string }) {
     await registerController(controllerPath, "", options);
   },
 
-  async group(prefix: string, callback: () => void | Promise<void>) {
+  group(prefix: string, callback: () => void | Promise<void>) {
     const previous = currentPrefix;
     currentPrefix = currentPrefix + prefix;
-    await callback();
+
+    const result = callback();
+    if (result instanceof Promise) {
+      return result.finally(() => {
+        currentPrefix = previous;
+      });
+    }
+
     currentPrefix = previous;
   },
 };

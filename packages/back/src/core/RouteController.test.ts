@@ -18,13 +18,13 @@ describe("registerController", () => {
       {
         method: "get",
         path: "/mock",
-        handler: "TestController.index",
+        handler: "TestRouteController.index",
         middlewares: [],
       },
       {
         method: "post",
         path: "/mock",
-        handler: "TestController.store",
+        handler: "TestRouteController.store",
         middlewares: [],
       },
     ]);
@@ -41,13 +41,13 @@ describe("registerController", () => {
       {
         method: "get",
         path: "/admin/mock",
-        handler: "TestController.index",
+        handler: "TestRouteController.index",
         middlewares: [],
       },
       {
         method: "post",
         path: "/admin/mock",
-        handler: "TestController.store",
+        handler: "TestRouteController.store",
         middlewares: [],
       },
     ]);
@@ -60,8 +60,8 @@ describe("Route.group", () => {
   });
 
   it("should apply group prefix to controller routes", async () => {
-    await Route.group("/api", async () => {
-      await Route.controller("TestRouteController", {
+    Route.group("/api", async () => {
+      Route.controller("TestRouteController", {
         baseDir: "src/__mocks__/controllers",
       });
     });
@@ -72,13 +72,13 @@ describe("Route.group", () => {
       {
         method: "get",
         path: "/api/mock",
-        handler: "TestController.index",
+        handler: "TestRouteController.index",
         middlewares: [],
       },
       {
         method: "post",
         path: "/api/mock",
-        handler: "TestController.store",
+        handler: "TestRouteController.store",
         middlewares: [],
       },
     ]);

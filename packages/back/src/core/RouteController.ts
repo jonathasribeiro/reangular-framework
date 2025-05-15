@@ -8,13 +8,10 @@ type RegisterOptions = {
 };
 
 /**
- * Registra rotas automaticamente com base nos decorators do controller.
- *
- * @param controllerPath Ex: 'UserController' ou 'Admin/UserController'
- * @param groupPrefix Prefixo opcional (usado por Route.group)
- * @param options Configurações adicionais (como baseDir)
+ * Registra rotas com base nos decorators, sem importar o controller.
+ * Apenas define as rotas e os handlers com base no nome do arquivo e decorators.
  */
-export async function registerController(
+export function registerController(
   controllerPath: string,
   groupPrefix: string = "",
   options: RegisterOptions = {}
@@ -23,60 +20,56 @@ export async function registerController(
     ? path.resolve(process.cwd(), options.baseDir)
     : path.resolve(process.cwd(), "src/controllers");
 
-  const guessedPath =
+  const filePath =
     controllerPath.endsWith(".ts") || controllerPath.endsWith(".js")
       ? path.resolve(process.cwd(), controllerPath)
       : path.resolve(defaultBaseDir, `${controllerPath}.ts`);
 
-  const jsFallbackPath = guessedPath.replace(/\.ts$/, ".js");
+  const jsFallbackPath = filePath.replace(/\.ts$/, ".js");
 
-  const resolvedPath = fs.existsSync(guessedPath)
-    ? guessedPath
+  const resolvedPath = fs.existsSync(filePath)
+    ? filePath
     : fs.existsSync(jsFallbackPath)
     ? jsFallbackPath
     : "";
 
   if (!resolvedPath || !fs.existsSync(resolvedPath)) {
-    console.warn(`⚠️ Controller not found: ${resolvedPath || guessedPath}`);
+    console.warn(`⚠️ Controller not found: ${resolvedPath || filePath}`);
     return;
   }
 
-  const controllerModule = await import(resolvedPath);
-  const Controller = controllerModule.default || controllerModule;
-  const controller = new Controller();
+  const ControllerName = path.basename(controllerPath); // Ex: "UserController"
+  const exportedClass = require(resolvedPath); // ✅ require síncrono
+  const Controller = exportedClass.default || exportedClass;
 
   const routes = getControllerRoutes(Controller);
-  const controllerName = Controller.name;
 
   for (const { method, path: routePath } of routes) {
-    const fullRoute = groupPrefix + routePath;
-    Route[method](
-      fullRoute,
-      `${controllerName}.${getMethodName(controller, method, routePath)}`
-    );
+    const handlerKey = getMethodNameFromMeta(Controller, method, routePath);
+    Route[method](groupPrefix + routePath, `${ControllerName}.${handlerKey}`);
   }
 }
 
 /**
- * Retorna o nome do método dentro da classe com base no metadata, ou tenta inferir.
+ * Retorna o nome do método com base no metadata (sem instanciar o controller).
  */
-function getMethodName(
-  controllerInstance: any,
+function getMethodNameFromMeta(
+  controllerClass: any,
   method: string,
   routePath: string
 ): string {
-  const proto = Object.getPrototypeOf(controllerInstance);
+  const proto = controllerClass.prototype;
   const keys = Object.getOwnPropertyNames(proto);
 
   for (const key of keys) {
     const meta = Reflect.getMetadata(
       `reangular:handler:${key}`,
-      controllerInstance.constructor
+      controllerClass
     );
     if (meta === `${method.toUpperCase()} ${routePath}`) {
       return key;
     }
   }
 
-  return "index"; // fallback
+  return "index";
 }
